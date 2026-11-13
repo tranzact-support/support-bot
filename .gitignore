@@ -1,9 +1,0 @@
-.env*
-!.env.example
-data/
-.sites-runtime/
-dist/
-node_modules/
-*.tar.gz
-
-work/
