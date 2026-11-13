@@ -4,10 +4,12 @@ from datetime import datetime,timedelta,timezone
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/'data';DATA.mkdir(exist_ok=True)
-CFG={}
-for line in Path(os.environ.get('FRESHCHAT_ENV_FILE',str(ROOT/'.env.local'))).read_text().splitlines():
- if '=' in line and not line.lstrip().startswith('#'):
-  k,v=line.split('=',1);CFG[k.strip()]=v.strip().strip('"').strip("'")
+CFG=dict(os.environ)
+envfile=Path(os.environ.get('FRESHCHAT_ENV_FILE',str(ROOT/'.env.local')))
+if envfile.exists():
+ for line in envfile.read_text().splitlines():
+  if '=' in line and not line.lstrip().startswith('#'):
+   k,v=line.split('=',1);CFG.setdefault(k.strip(),v.strip().strip('"').strip("'"))
 BASE=CFG.get('FRESHCHAT_BASE_URL','https://api.freshchat.com').rstrip('/')
 def api(path,payload=None):
  req=urllib.request.Request(BASE+path,data=json.dumps(payload).encode() if payload else None,headers={'Authorization':'Bearer '+CFG['FRESHCHAT_API_TOKEN'],'Content-Type':'application/json'})

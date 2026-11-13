@@ -5,3 +5,5 @@ data/
 dist/
 node_modules/
 *.tar.gz
+
+work/
