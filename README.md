@@ -8,17 +8,17 @@ The opening screen offers **Facing an issue**, **Need help**, and **Request new 
 
 The initial import covers 13 November 2025 to 13 November 2026: 7,090 conversations and 597,627 messages, deduplicated by message ID. Search uses 32,197 evidence windows from conversations with customer questions and substantive agent replies. CSV exports, stored knowledge, requests, answer logs, feedback and credentials are excluded from this repository.
 
-The server searches the imported history, passes relevant evidence to the OpenAI Responses API, and includes source dates in its answers. Questions without matching evidence receive a clarification or support-review fallback. Private notes and system events are excluded. Email addresses, phone numbers, links and common secret patterns are removed before indexing. This is basic redaction, not a guarantee that every identifying detail is removed; the live app remains owner-private.
+The server searches the imported history and returns relevant historical human support replies with source dates. It makes no OpenAI or other paid AI API calls. Replies are clearly labeled as past examples, rather than synthesized or newly verified fixes. Questions without matching evidence receive a clarification or support-review fallback. Private notes and system events are excluded. Email addresses, phone numbers, links and common secret patterns are removed before indexing. This is basic redaction, not a guarantee that every identifying detail is removed; the live app remains owner-private.
 
 Feedback and corrections are saved for review and do not automatically enter the answer knowledge. Requests are stored in the bot workspace; they do not send email or create Freshdesk tickets.
 
 ## Hosting
 
-GitHub stores the source. GitHub Pages serves the `docs/` launch page, which opens the private application. The application and APIs run on Sites / Cloudflare Workers with an R2 binding called `BUCKET`. GitHub Pages cannot execute the private AI and Freshchat server code.
+GitHub stores the source. GitHub Pages serves the `docs/` launch page, which opens the private application. The application and APIs run on Sites / Cloudflare Workers with an R2 binding called `BUCKET`. GitHub Pages cannot execute the private Freshchat and search server code.
 
 To enable the Pages launch page, open **Settings → Pages → Source → GitHub Actions**, then run the **Publish GitHub Pages** workflow. The expected launch URL is `https://tranzact-support.github.io/support-bot/`. Verify the deployment before sharing this URL.
 
-Runtime secrets are configured on the server: `OPENAI_API_KEY`, `FRESHCHAT_API_TOKEN`, and `FRESHCHAT_BASE_URL`. Never put them in GitHub Pages or browser code. API billing must be enabled for AI-generated answers. The default model is `gpt-4.1-mini`; `OPENAI_MODEL` can override it.
+Runtime Freshchat secrets are configured on the server: `FRESHCHAT_API_TOKEN` and `FRESHCHAT_BASE_URL`. Never put them in GitHub Pages or browser code. No OpenAI key or AI credits are required. The existing hosting and Freshchat service limits still apply.
 
 Sites controls sign-in and owner-private access. Do not deploy this Worker to an unprotected public endpoint: the administrative import and refresh routes depend on the platform's owner-private boundary. Sharing the source repository does not grant access to the bot's stored knowledge.
 
